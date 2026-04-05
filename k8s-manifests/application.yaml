@@ -1,19 +1,20 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
   name: python-app
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: python-app
-  template:
-    metadata:
-      labels:
-        app: python-app
-    spec:
-      containers:
-      - name: python-app
-        image: hossam789/docker-python-app:1.0
-        ports:
-        - containerPort: 5000
+  project: default
+
+  source:
+    repoURL: https://github.com/hossam1975/app-payhon.git
+    targetRevision: main
+    path: k8s-manifests   # مهم: خلي path يحدد المجلد اللي فيه الـ manifests
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
